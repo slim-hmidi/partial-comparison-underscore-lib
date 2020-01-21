@@ -2,10 +2,10 @@
   "name": "partials",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "jest --watchAll",
-    "start": "node ."
+    "start": "nodemon ."
   },
   "author": "",
   "license": "ISC",

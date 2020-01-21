@@ -3,3 +3,6 @@ const partialCtrl = require('../controllers/index');
 
 router.route('/data')
   .get(partialCtrl.getData);
+
+
+module.exports = router;

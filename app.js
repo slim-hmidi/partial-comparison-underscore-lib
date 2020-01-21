@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const routes = require('./routes/index');
+require('./config/index');
 
 const app = express();
 app.use(bodyParser.json());

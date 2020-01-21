@@ -28,11 +28,11 @@ const createDataFile = (dirPath, size) => {
   });
 };
 
-const createFiles = (sizeList) => {
+const createFiles = (dirPath, sizeList) => {
   if (sizeList && !sizeList.length) throw new Error('The list of size should not be empty');
 
   const fileCreationPromises = sizeList.map(async (size) => {
-    await createDataFile(size);
+    await createDataFile(dirPath, size);
   });
   return Promise.all(fileCreationPromises);
 };
@@ -51,12 +51,6 @@ const readDataFromFile = (filename) => {
   return data;
 };
 
-// const isDirectoryEmpty = (dirPath) => {
-//   if (!dirPath) throw new Error('Directory path is not valid');
-//   const result = fs.readdirSync(dirPath);
-//   return !result.length;
-// };
-
 const functionExecutionTime = (func, data, label) => {
   if (!func) throw new Error('Function  was not provided');
   if (!data) throw new Error('Data was not provided');
@@ -71,11 +65,15 @@ const generateData = (dirPath, sizeList) => {
   if (!dirPath) throw new Error('No directory path was provied');
   if (!sizeList || (sizeList && !sizeList.length)) throw new Error('Size list should not be empty');
   if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath);
-    return createFiles(dirPath, sizeList);
+    return fs.mkdir(dirPath, (error) => {
+      if (error) throw error;
+      createFiles(dirPath, sizeList);
+    });
   }
-  throw new Error(`${dirPath} already exists`);
+  return null;
 };
+
+const sizeList = [500, 1000, 1500, 2000, 2500, 3000];
 
 
 module.exports = {
@@ -84,7 +82,7 @@ module.exports = {
   generateRandomData,
   createDataFile,
   sum,
-  // isDirectoryEmpty,
   readDataFromFile,
   functionExecutionTime,
+  sizeList,
 };
