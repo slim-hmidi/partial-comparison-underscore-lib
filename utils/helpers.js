@@ -51,14 +51,14 @@ const readDataFromFile = (filename) => {
   return data;
 };
 
-const functionExecutionTime = (func, data, label) => {
+const functionExecutionTime = (func, data) => {
   if (!func) throw new Error('Function  was not provided');
   if (!data) throw new Error('Data was not provided');
   const start = performance.now();
   func(data);
   const end = performance.now();
   const duration = (end - start).toFixed(3);
-  return `Execution time for ${label}: ${duration}ms`;
+  return `${duration}ms`;
 };
 
 const generateData = (dirPath, sizeList) => {
