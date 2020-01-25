@@ -9,26 +9,26 @@ const dirPath = resolve(__dirname, '../data');
 
 module.exports.getData = (req, res) => {
   const files = fs.readdirSync(dirPath);
-  const uPartialtimes = [];
-  const mPartialtimes = [];
+  const uPartialTimes = [];
+  const mPartialTimes = [];
   if (files && files.length) {
     for (const file of files) {
       const filename = resolve(dirPath, `./${file}`);
       const parsedData = readDataFromFile(filename);
       const { length } = parsedData;
 
-      uPartialtimes.push({
-        size: length,
-        time: functionExecutionTime(underscorePartial, parsedData, `UP_${length}`),
+      uPartialTimes.push({
+        label: length,
+        value: functionExecutionTime(underscorePartial, parsedData, `UP_${length}`),
       });
-      mPartialtimes.push({
-        size: length,
-        time: functionExecutionTime(manualPartial, parsedData, `MP_${length}`),
+      mPartialTimes.push({
+        label: length,
+        value: functionExecutionTime(manualPartial, parsedData, `MP_${length}`),
       });
     }
   }
   res.status(200).json({
-    uPartialtimes,
-    mPartialtimes,
+    uPartialTimes,
+    mPartialTimes,
   });
 };

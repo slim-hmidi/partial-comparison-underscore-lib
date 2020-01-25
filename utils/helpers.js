@@ -58,7 +58,7 @@ const functionExecutionTime = (func, data) => {
   func(data);
   const end = performance.now();
   const duration = (end - start).toFixed(3);
-  return `${duration}ms`;
+  return duration;
 };
 
 const generateData = (dirPath, sizeList) => {
