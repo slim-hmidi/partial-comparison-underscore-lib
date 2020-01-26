@@ -71,7 +71,11 @@ const execute = async (func, dirPath, label) => {
       });
     }
   }
-  await createFile(path.resolve(dirPath, `./${label}`), JSON.stringify(result));
+  const executionDirPath = path.join(dirPath, '../executionTime');
+  if (!fs.existsSync(executionDirPath)) {
+    fs.mkdirSync(executionDirPath);
+  }
+  await createFile(path.resolve(executionDirPath, `./${label}`), JSON.stringify(result));
 };
 
 
@@ -81,7 +85,7 @@ const generateData = async (dirPath, sizeList) => {
   await createFiles(dirPath, sizeList);
 };
 
-const sizeList = [500, 1000, 1500, 2000, 2500, 3000];
+const sizeList = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 20000];
 
 
 module.exports = {

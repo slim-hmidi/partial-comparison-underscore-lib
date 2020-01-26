@@ -1,0 +1,1 @@
+[{"label":1000,"value":"0.518"},{"label":10000,"value":"2.093"},{"label":2000,"value":"1.178"},{"label":20000,"value":"1.345"},{"label":3000,"value":"0.094"},{"label":4000,"value":"0.121"},{"label":5000,"value":"0.939"},{"label":6000,"value":"0.181"},{"label":7000,"value":"0.201"},{"label":8000,"value":"0.221"},{"label":9000,"value":"0.239"}]
