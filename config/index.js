@@ -1,10 +1,19 @@
 const { resolve } = require('path');
-const { generateData, sizeList } = require('../utils/helpers');
+const fs = require('fs');
+const { generateData, sizeList, execute } = require('../utils/helpers');
+const { underscorePartial, manualPartial } = require('../main/partial');
 
 const dirPath = resolve(__dirname, '../data');
 
 const initialize = () => {
-  generateData(dirPath, sizeList);
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdir(dirPath, async (error) => {
+      if (error) throw error;
+      await generateData(dirPath, sizeList);
+      await execute(underscorePartial, dirPath, 'uExecutionTime.txt');
+      await execute(manualPartial, dirPath, 'mExecutionTime.txt');
+    });
+  }
 };
 
 try {

@@ -1,9 +1,8 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-param-reassign */
 const fs = require('fs');
 const { performance } = require('perf_hooks');
-const { resolve } = require('path');
-
-// const directoryPath = resolve(__dirname, './data');
+const path = require('path');
 
 const generateRandomData = (size) => {
   if (!size) throw new Error('Size should be a positive number');
@@ -15,16 +14,18 @@ const generateRandomData = (size) => {
   return result;
 };
 
-const createDataFile = (dirPath, size) => {
-  const data = generateRandomData(size);
-  const fileName = resolve(dirPath, `./data_${size}.txt`);
+const createFile = (fileName, data) => {
   if (fs.existsSync(fileName)) throw new Error('Filename already exists');
-  fs.writeFile(fileName, data, {
-    encoding: 'utf8',
-    flag: 'w',
-  }, (error) => {
-    if (error) throw error;
-    console.log(`data_${size}.txt was created successfully`);
+  if (!data) throw new Error('Data not provided');
+  return new Promise((resolve, reject) => {
+    fs.writeFile(fileName, data, {
+      encoding: 'utf8',
+      flag: 'w',
+    }, (error) => {
+      if (error) reject(error);
+      console.log('File created successfully');
+      resolve(null);
+    });
   });
 };
 
@@ -32,26 +33,20 @@ const createFiles = (dirPath, sizeList) => {
   if (sizeList && !sizeList.length) throw new Error('The list of size should not be empty');
 
   const fileCreationPromises = sizeList.map(async (size) => {
-    await createDataFile(dirPath, size);
+    const data = generateRandomData(size);
+    const fileName = path.resolve(dirPath, `./data_${size}.txt`);
+    await createFile(fileName, data);
   });
   return Promise.all(fileCreationPromises);
 };
 
-// eslint-disable-next-line no-return-assign
-const sum = (...args) => args.reduce((acc, curr) => acc += curr, 0);
-
 const readDataFromFile = (filename) => {
   if (!filename) throw new Error('No filename was provided');
-  const parsedData = fs.readFileSync(filename, {
-    encoding: 'utf8',
-    falg: 'r',
-  });
-
-  const data = parsedData.split(',').map(Number);
-  return data;
+  const parsedData = fs.readFileSync(filename, { encoding: 'utf8', flag: 'r' });
+  return parsedData;
 };
 
-const functionExecutionTime = (func, data) => {
+const getExecutionTime = (func, data) => {
   if (!func) throw new Error('Function  was not provided');
   if (!data) throw new Error('Data was not provided');
   const start = performance.now();
@@ -61,16 +56,29 @@ const functionExecutionTime = (func, data) => {
   return duration;
 };
 
-const generateData = (dirPath, sizeList) => {
+const execute = async (func, dirPath, label) => {
+  const files = fs.readdirSync(dirPath);
+  const result = [];
+  if (files && files.length) {
+    for (const file of files) {
+      const filename = path.resolve(dirPath, `./${file}`);
+      const parsedData = readDataFromFile(filename);
+      const data = parsedData.split(',').map((d) => Number(d));
+      const { length } = data;
+      result.push({
+        label: length,
+        value: getExecutionTime(func, data),
+      });
+    }
+  }
+  await createFile(path.resolve(dirPath, `./${label}`), JSON.stringify(result));
+};
+
+
+const generateData = async (dirPath, sizeList) => {
   if (!dirPath) throw new Error('No directory path was provied');
   if (!sizeList || (sizeList && !sizeList.length)) throw new Error('Size list should not be empty');
-  if (!fs.existsSync(dirPath)) {
-    return fs.mkdir(dirPath, (error) => {
-      if (error) throw error;
-      createFiles(dirPath, sizeList);
-    });
-  }
-  return null;
+  await createFiles(dirPath, sizeList);
 };
 
 const sizeList = [500, 1000, 1500, 2000, 2500, 3000];
@@ -80,9 +88,9 @@ module.exports = {
   createFiles,
   generateData,
   generateRandomData,
-  createDataFile,
-  sum,
+  createFile,
   readDataFromFile,
-  functionExecutionTime,
+  getExecutionTime,
+  execute,
   sizeList,
 };

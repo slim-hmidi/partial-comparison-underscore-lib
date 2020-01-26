@@ -7,7 +7,7 @@ describe('App', () => {
     const { status, body } = await request(app).get('/data');
 
     expect(status).toBe(200);
-    expect(body).toHaveProperty('uPartialtimes');
-    expect(body).toHaveProperty('mPartialtimes');
+    expect(body).toHaveProperty('uPartialTimes');
+    expect(body).toHaveProperty('mPartialTimes');
   });
 });
